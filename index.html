@@ -232,12 +232,36 @@
     line-height: 1.6;
   }
 
+  /* ===== 宣传片 ===== */
+  .trailer-section {
+    background: linear-gradient(180deg, #F5F9FF 0%, #FFFFFF 100%);
+    padding: 80px 24px;
+  }
+
+  .trailer-frame {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.15);
+    background: #0B1437;
+    position: relative;
+  }
+
+  .trailer-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
   /* ===== 下载区块 ===== */
   .download {
     background: linear-gradient(160deg, #1565C0 0%, #0D47A1 100%);
     color: #fff;
     text-align: center;
-    border-radius: 0;
   }
   .download .section-title { color: #fff; }
   .download .section-sub { color: rgba(255,255,255,0.7); }
@@ -245,19 +269,12 @@
   .download-card {
     background: rgba(255,255,255,0.08);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 24px;
     padding: 48px 32px;
     max-width: 480px;
     margin: 0 auto;
-  }
-
-  .download-card .version {
-    font-size: 13px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.6);
-    margin-bottom: 12px;
   }
 
   .download-card .name {
@@ -340,7 +357,7 @@
     color: #aaa;
   }
 
-  /* ===== 移动端 ===== */
+  /* ===== 移动端适配 ===== */
   @media (max-width: 640px) {
     nav { padding: 14px 20px; }
     .nav-links { gap: 20px; }
@@ -349,6 +366,14 @@
     .hero { padding: 100px 20px 60px; }
     .hero-actions { flex-direction: column; width: 100%; }
     .hero-actions .btn { width: 100%; justify-content: center; }
+    .trailer-section { padding: 60px 16px; }
+    .trailer-frame {
+      aspect-ratio: 9 / 16;
+      max-width: 360px;
+      border-radius: 20px;
+    }
+    .download-card { padding: 36px 24px; }
+    .download-card .name { font-size: 24px; }
   }
 </style>
 </head>
@@ -362,6 +387,7 @@
   </div>
   <div class="nav-links">
     <a href="#features">功能</a>
+    <a href="#trailer">宣传片</a>
     <a href="#download">下载</a>
     <a href="#about">关于</a>
   </div>
@@ -377,7 +403,7 @@
       <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
       下载内测版
     </a>
-    <a href="#about" class="btn btn-ghost">了解更多</a>
+    <a href="#trailer" class="btn btn-ghost">观看宣传片</a>
   </div>
 </header>
 
@@ -435,6 +461,19 @@
   </div>
 </section>
 
+<!-- 宣传片 -->
+<section id="trailer" class="trailer-section">
+  <div class="container">
+    <div class="reveal">
+      <h2 class="section-title">轻聊 · 宣传片</h2>
+      <p class="section-sub">连接你的专属宇宙</p>
+    </div>
+    <div class="trailer-frame reveal">
+      <iframe src="trailer.html" title="轻聊宣传片" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </div>
+</section>
+
 <!-- 下载 -->
 <section id="download" class="download">
   <div class="container">
@@ -443,9 +482,8 @@
       <p class="section-sub">迟到的约定，终于赴约</p>
     </div>
     <div class="download-card reveal">
-      <div class="version">当前版本</div>
-      <div class="name">轻聊 v2.0.3</div>
-      <div class="meta">Android · 约 5 MB · 免登录下载</div>
+      <div class="name">轻聊</div>
+      <div class="meta">Android · 免登录下载</div>
       <a id="download-btn" href="#" class="btn btn-primary">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         下载 APK
@@ -483,9 +521,8 @@
 </footer>
 
 <script>
-  // ===== 下载链接配置 =====
-  // 只需修改这一行，指向你的 GitHub Release 固定链接
-  var APK_URL = 'https://github.com/你的用户名/你的仓库/releases/latest/download/qingliao.apk';
+  // ===== 下载链接配置（稳定版，不用改代码）=====
+  var APK_URL = 'https://github.com/qingliao-smart/qingliao/releases/latest/download/default.apk';
   document.getElementById('download-btn').href = APK_URL;
 
   // ===== 滚动淡入 =====
