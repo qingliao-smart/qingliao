@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>轻聊 · 宣传片</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232196F3'/%3E%3Cpath d='M32 12C20 12 10 20.5 10 31c0 5.6 2.7 10.6 7 14-.4 2.2-1.4 4.6-3 6.5-.3.4 0 1 .4 1.1 3.9.4 7.5-.5 10.4-2.2 1.8.5 3.7.8 5.6.8 12 0 22-8.5 22-19S44 12 32 12z' fill='white'/%3E%3C/svg%3E">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+                 "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+                 "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .stage { position: fixed; inset: 0; width: 100vw; height: 100vh; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex;
+    padding: 8vh 8vw;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.9s ease, visibility 0.9s ease;
+  }
+  .slide.active { opacity: 1; visibility: visible; }
+
+  /* ===== 每页背景色 ===== */
+  .s1 { background: linear-gradient(160deg, #0B1437 0%, #1A2B5C 100%); color: #fff; }
+  .s2 { background: linear-gradient(160deg, #2C3E50 0%, #3D566E 100%); color: #fff; }
+  .s3 { background: linear-gradient(160deg, #E3F2FD 0%, #BBDEFB 100%); color: #1A2B5C; }
+  .s4 { background: linear-gradient(160deg, #B3E5FC 0%, #81D4FA 100%); color: #0D47A1; }
+  .s5 { background: linear-gradient(160deg, #4FC3F7 0%, #29B6F6 100%); color: #fff; }
+  .s6 { background: linear-gradient(160deg, #1565C0 0%, #42A5F5 100%); color: #fff; }
+  .s7 { background: linear-gradient(160deg, #E1F5FE 0%, #B3E5FC 100%); color: #1A2B5C; }
+  .s8 { background: linear-gradient(160deg, #1976D2 0%, #0D47A1 100%); color: #fff; }
+  .s9 { background: #E3F2FD; color: #1565C0; }
+  .s10 { background: #FFFFFF; color: #1565C0; }
+
+  /* ===== 通用文字初始态 ===== */
+  .title, .subtitle, .footer, .logo-wrap, .small-title { opacity: 0; }
+
+  .title {
+    font-size: clamp(1.9rem, 7.5vw, 4.8rem);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+    max-width: 86vw;
+  }
+  .subtitle {
+    margin-top: 1.6vh;
+    font-size: clamp(0.95rem, 3.2vw, 1.7rem);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    line-height: 1.55;
+    max-width: 82vw;
+    opacity: 0.92;
+  }
+  .subtitle + .subtitle { margin-top: 0.8vh; font-size: clamp(0.85rem, 2.8vw, 1.4rem); opacity: 0.85; }
+
+  /* ============================================================
+     第1页：深夜蓝，淡入，偏左下
+     ============================================================ */
+  .s1 { justify-content: flex-start; align-items: flex-end;
+        padding-bottom: 20vh; padding-left: 8vw; }
+  .s1 .title, .s1 .subtitle {
+    transition: opacity 1.3s ease;
+  }
+  .s1.active .title    { opacity: 1; }
+  .s1.active .subtitle{ opacity: 0.92; transition-delay: 0.55s; }
+
+  /* ============================================================
+     第2页：灰蓝，从左滑入，靠右
+     ============================================================ */
+  .s2 { justify-content: flex-end; align-items: center;
+        padding-right: 8vw; }
+  .s2 .title, .s2 .subtitle {
+    transform: translateX(-10vw);
+    transition: opacity 0.9s ease, transform 0.9s cubic-bezier(.2,.7,.2,1);
+  }
+  .s2.active .title    { opacity: 1; transform: translateX(0); }
+  .s2.active .subtitle{ opacity: 0.92; transform: translateX(0); transition-delay: 0.35s; }
+
+  /* ============================================================
+     第3页：淡蓝到白，从右滑入，靠左偏上
+     ============================================================ */
+  .s3 { justify-content: flex-start; align-items: flex-start;
+        padding-top: 16vh; padding-left: 8vw; }
+  .s3 .title, .s3 .subtitle {
+    transform: translateX(10vw);
+    transition: opacity 0.9s ease, transform 0.9s cubic-bezier(.2,.7,.2,1);
+  }
+  .s3.active .title    { opacity: 1; transform: translateX(0); }
+  .s3.active .subtitle{ opacity: 0.92; transform: translateX(0); transition-delay: 0.35s; }
+
+  /* ============================================================
+     第4页：浅蓝，打字机，居中偏下
+     ============================================================ */
+  .s4 { justify-content: center; align-items: flex-end;
+        padding-bottom: 20vh; }
+  .s4 .title { min-height: 1.2em; text-align: center; }
+  .s4 .subtitle { opacity: 0; transition: opacity 0.8s ease; text-align: center; }
+  .s4.active .subtitle.on { opacity: 0.92; }
+  .cursor::after {
+    content: '';
+    display: inline-block;
+    width: 0.06em; height: 0.9em;
+    margin-left: 0.08em;
+    background: currentColor;
+    vertical-align: -0.08em;
+    animation: blink 0.9s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ============================================================
+     第5页：蓝色，从下浮现，靠左三行错落
+     ============================================================ */
+  .s5 { justify-content: flex-start; align-items: flex-end;
+        padding-left: 8vw; padding-bottom: 15vh; }
+  .s5 .title, .s5 .subtitle {
+    transform: translateY(6vh);
+    transition: opacity 1s ease, transform 1s cubic-bezier(.2,.7,.2,1);
+  }
+  .s5 .subtitle:nth-of-type(2) { transition-delay: 0.25s; }
+  .s5 .subtitle:nth-of-type(3) { transition-delay: 0.5s; }
+  .s5.active .title    { opacity: 1; transform: translateY(0); }
+  .s5.active .subtitle { opacity: 0.92; transform: translateY(0); }
+
+  /* ============================================================
+     第6页：深蓝到浅蓝，缩放+模糊，靠右偏下
+     ============================================================ */
+  .s6 { justify-content: flex-end; align-items: flex-end;
+        padding-right: 8vw; padding-bottom: 15vh; }
+  .s6 .title, .s6 .subtitle {
+    transform: scale(1.12) blur(10px);
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+  .s6 .subtitle:nth-of-type(2) { transition-delay: 0.3s; }
+  .s6.active .title    { opacity: 1; transform: scale(1) blur(0); }
+  .s6.active .subtitle { opacity: 0.92; transform: scale(1) blur(0); }
+
+  /* ============================================================
+     第7页：浅蓝到白，旋转+淡入，居中
+     ============================================================ */
+  .s7 { justify-content: center; align-items: center; flex-direction: column; }
+  .s7 .title, .s7 .subtitle {
+    transform: rotate(-5deg) scale(0.93);
+    transition: opacity 1.1s ease, transform 1.1s cubic-bezier(.2,.7,.2,1);
+  }
+  .s7 .subtitle:nth-of-type(2) { transition-delay: 0.35s; }
+  .s7 .subtitle:nth-of-type(3) { transition-delay: 0.6s; }
+  .s7.active .title    { opacity: 1; transform: rotate(0) scale(1); }
+  .s7.active .subtitle { opacity: 0.92; transform: rotate(0) scale(1); }
+
+  /* ============================================================
+     第8页：蓝色加深，左滑+轻微放大，靠右一大一小错开
+     ============================================================ */
+  .s8 { justify-content: flex-end; align-items: center;
+        padding-right: 8vw; }
+  .s8 .title, .s8 .subtitle {
+    transform: translateX(-8vw) scale(0.95);
+    transition: opacity 1s ease, transform 1s cubic-bezier(.2,.7,.2,1);
+  }
+  .s8 .subtitle {
+    font-size: clamp(0.9rem, 3vw, 1.5rem);
+    margin-left: 10vw;             /* 与主标题错开 */
+    transition-delay: 0.4s;
+  }
+  .s8.active .title    { opacity: 1; transform: translateX(0) scale(1); }
+  .s8.active .subtitle { opacity: 0.92; transform: translateX(0) scale(1); }
+
+  /* ============================================================
+     第9页：纯净浅蓝，淡入+上移，中央 logo
+     ============================================================ */
+  .s9 { justify-content: center; align-items: center; flex-direction: column; }
+
+  .logo-wrap {
+    width: clamp(100px, 24vw, 150px);
+    height: clamp(100px, 24vw, 150px);
+    background: #2196F3;
+    border-radius: 22%;
+    position: relative;
+    margin-bottom: 5vh;
+    transform: translateY(4vh);
+    transition: opacity 1.1s ease, transform 1.1s ease;
+  }
+  .s9.active .logo-wrap, .s10.active .logo-wrap { opacity: 1; transform: translateY(0); }
+  .logo-wrap .bubble {
+    position: absolute;
+    top: 24%; left: 20%;
+    width: 60%; height: 42%;
+    background: #fff;
+    border-radius: 50% / 48%;
+  }
+  .logo-wrap .tail {
+    position: absolute;
+    top: 56%; left: 26%;
+    width: 16%; height: 16%;
+    background: #fff;
+    transform: rotate(45deg);
+    border-radius: 12%;
+  }
+
+  .s9 .small-title {
+    font-size: clamp(1.8rem, 6vw, 3rem);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: opacity 1s ease, transform 1s ease;
+    transition-delay: 0.4s;
+  }
+  .s9.active .small-title { opacity: 1; }
+
+  .s9 .footer {
+    position: absolute;
+    bottom: 6vh; left: 0; right: 0;
+    text-align: center;
+    font-size: clamp(0.8rem, 2.4vw, 1rem);
+    font-weight: 300;
+    letter-spacing: 0.14em;
+    opacity: 0.7;
+    transition: opacity 1s ease;
+    transition-delay: 1s;
+  }
+  .s9.active .footer { opacity: 0.7; }
+
+  /* ============================================================
+     第10页：纯白，logo缩小 + 文字从下方滑入
+     ============================================================ */
+  .s10 { justify-content: center; align-items: center; flex-direction: column; }
+  .s10 .logo-wrap {
+    width: clamp(64px, 14vw, 96px);
+    height: clamp(64px, 14vw, 96px);
+    margin-bottom: 4vh;
+    transform: scale(1.3);
+    transition: opacity 1s ease, transform 1s cubic-bezier(.2,.7,.2,1);
+  }
+  .s10.active .logo-wrap { opacity: 1; transform: scale(1); }
+
+  .s10 .title {
+    font-size: clamp(1.5rem, 5.5vw, 2.6rem);
+    font-weight: 600;
+    transform: translateY(4vh);
+    transition: opacity 1s ease, transform 1s ease;
+    transition-delay: 0.4s;
+  }
+  .s10.active .title { opacity: 1; transform: translateY(0); }
+
+  .s10 .footer {
+    position: absolute;
+    bottom: 6vh; left: 0; right: 0;
+    text-align: center;
+    font-size: clamp(0.8rem, 2.4vw, 1rem);
+    font-weight: 300;
+    letter-spacing: 0.14em;
+    opacity: 0.6;
+    transition: opacity 1s ease;
+    transition-delay: 1s;
+  }
+  .s10.active .footer { opacity: 0.6; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- 1 -->
+  <section class="slide s1">
+    <div>
+      <div class="title">你有没有过这种感觉</div>
+      <div class="subtitle">想说的话，不知道该往哪里发</div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide s2">
+    <div>
+      <div class="title">群里太吵</div>
+      <div class="subtitle">朋友圈太假，大平台太复杂</div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide s3">
+    <div>
+      <div class="title">所以我们做了轻聊</div>
+      <div class="subtitle">一个只属于小圈子的聊天工具</div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide s4">
+    <div>
+      <div class="title" id="type-line" data-text="它很小"></div>
+      <div class="subtitle" id="type-sub">小到只装得下你和你真正在乎的人</div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide s5">
+    <div>
+      <div class="title">谁在用？</div>
+      <div class="subtitle">同学、朋友、家人</div>
+      <div class="subtitle">任何想安静聊天、不被打扰的人</div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide s6">
+    <div>
+      <div class="title">能做什么？</div>
+      <div class="subtitle">私聊 · 群聊 · 语音 · 视频</div>
+      <div class="subtitle">文件 · 端到端加密 · AI内容审核</div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide s7">
+    <div style="text-align:center;">
+      <div class="title">没有广告</div>
+      <div class="subtitle">没有推荐算法，没有信息流</div>
+      <div class="subtitle">没有人在偷偷看你的聊天</div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide s8">
+    <div>
+      <div class="title">迟到的约定</div>
+      <div class="subtitle">终于赴约</div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide s9">
+    <div class="logo-wrap">
+      <div class="bubble"></div>
+      <div class="tail"></div>
+    </div>
+    <div class="small-title">轻聊</div>
+    <div class="footer">连接你的专属宇宙</div>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide s10">
+    <div class="logo-wrap">
+      <div class="bubble"></div>
+      <div class="tail"></div>
+    </div>
+    <div class="title">轻聊 v2.0.3</div>
+    <div class="footer">轻聊工作室 · 2026</div>
+  </section>
+
+</div>
+
+<script>
+  (function () {
+    var slides = document.querySelectorAll('.slide');
+    var TURN_MS = 4000;
+    var LAST_MS = 7000;
+    var idx = 0;
+    var typeTimer = null;
+    var typeDoneTimer = null;
+
+    function clearType() {
+      if (typeTimer)      { clearTimeout(typeTimer);      typeTimer = null; }
+      if (typeDoneTimer)  { clearTimeout(typeDoneTimer);  typeDoneTimer = null; }
+      var line = document.getElementById('type-line');
+      var sub  = document.getElementById('type-sub');
+      if (line) { line.textContent = ''; line.classList.remove('cursor'); }
+      if (sub)  { sub.classList.remove('on'); }
+    }
+
+    function startTypewriter() {
+      var line = document.getElementById('type-line');
+      var sub  = document.getElementById('type-sub');
+      var full = line.dataset.text;
+      line.textContent = '';
+      line.classList.add('cursor');
+      var i = 0;
+      function tick() {
+        line.textContent = full.slice(0, i);
+        i++;
+        if (i <= full.length) {
+          typeTimer = setTimeout(tick, 220);
+        } else {
+          line.classList.remove('cursor');
+          typeDoneTimer = setTimeout(function () { sub.classList.add('on'); }, 400);
+        }
+      }
+      tick();
+    }
+
+    function show(i) {
+      clearType();
+      for (var j = 0; j < slides.length; j++) {
+        slides[j].classList.toggle('active', j === i);
+      }
+      if (i === 3) startTypewriter();
+    }
+
+    function loop() {
+      show(idx);
+      var isLast = idx === slides.length - 1;
+      setTimeout(function () {
+        idx = (idx + 1) % slides.length;
+        loop();
+      }, isLast ? LAST_MS : TURN_MS);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loop);
+    } else {
+      loop();
+    }
+  })();
+</script>
+
+</body>
+</html>
